@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>髙原 慎司 | 一級建築士 / Highland House</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Noto+Serif+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ink:      #111118;
+      --charcoal: #1e1e2a;
+      --slate:    #2d2d3a;
+      --mid:      #5a5a72;
+      --light:    #a8a8bc;
+      --paper:    #f7f5f0;
+      --white:    #ffffff;
+      --gold:     #b8965a;
+      --gold-lt:  #d4b07a;
+      --accent:   #8fa8c0;
+      --line:     rgba(184,150,90,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* ────────────────────────────
+       HERO
+    ──────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: var(--charcoal);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 建築的グリッドライン */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(184,150,90,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184,150,90,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 60px 80px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--gold);
+    }
+    .hero-eyebrow span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.28em;
+      color: var(--gold);
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 5vw, 5.2rem);
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: 0.08em;
+      line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .hero h1 strong {
+      font-weight: 600;
+    }
+    .hero-nick {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.3em;
+      margin-bottom: 36px;
+      display: block;
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      margin-bottom: 36px;
+    }
+
+    .hero-tagline {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 2;
+      letter-spacing: 0.06em;
+      max-width: 340px;
+      margin-bottom: 48px;
+      font-weight: 300;
+    }
+    .hero-tagline em {
+      font-style: normal;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .hero-licenses {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .license-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+    }
+    .license-row::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+    .license-row.primary {
+      color: var(--gold-lt);
+      font-size: 0.85rem;
+    }
+
+    /* Hero Right — 建築図面風の装飾 */
+    .hero-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      padding: 60px;
+    }
+
+    .blueprint {
+      width: 320px;
+      height: 320px;
+      position: relative;
+    }
+    .bp-outer {
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(184,150,90,0.3);
+      border-radius: 2px;
+    }
+    .bp-inner {
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(184,150,90,0.15);
+      border-radius: 1px;
+    }
+    .bp-cross {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bp-cross::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(184,150,90,0.12);
+    }
+    .bp-cross::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 1px;
+      background: rgba(184,150,90,0.12);
+    }
+    .bp-circle {
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,150,90,0.25);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(184,150,90,0.04);
+    }
+    .bp-circle-inner {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,150,90,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(30,30,42,0.8);
+    }
+    .bp-initials {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+    /* 角の飾り */
+    .bp-corner {
+      position: absolute;
+      width: 16px; height: 16px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.6;
+    }
+    .bp-corner.tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+    .bp-corner.tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+    .bp-corner.bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+    .bp-corner.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+    /* 回転アニメーション */
+    .bp-rotate {
+      position: absolute;
+      inset: 40px;
+      border: 1px dashed rgba(184,150,90,0.12);
+      border-radius: 50%;
+      animation: bp-spin 30s linear infinite;
+    }
+    @keyframes bp-spin { to { transform: rotate(360deg); } }
+
+    /* スクロールヒント */
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 80px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 48px; height: 1px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* ────────────────────────────
+       NAV BAR（シンプルな目次）
+    ──────────────────────────── */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247,245,240,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.12em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.73rem;
+      letter-spacing: 0.15em;
+      color: var(--mid);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ────────────────────────────
+       SECTION COMMON
+    ──────────────────────────── */
+    .section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 100px 40px;
+    }
+    .section.narrow { max-width: 760px; }
+
+    .sec-eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .sec-eyebrow::before {
+      content: '';
+      width: 32px; height: 1px;
+      background: var(--gold);
+    }
+
+    .sec-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+      margin-bottom: 56px;
+      line-height: 1.3;
+    }
+
+    /* 区切り線 */
+    .thin-rule {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 0;
+    }
+
+    /* ────────────────────────────
+       ABOUT — 一文フィロソフィー
+    ──────────────────────────── */
+    .about-wrap {
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(184,150,90,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184,150,90,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .about-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.9;
+      letter-spacing: 0.06em;
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+    }
+    .about-quote::before {
+      content: '"';
+      font-size: 6rem;
+      color: var(--gold);
+      opacity: 0.3;
+      display: block;
+      line-height: 0.6;
+      margin-bottom: 20px;
+    }
+    .about-quote em {
+      font-style: normal;
+      color: var(--gold-lt);
+    }
+
+    /* ────────────────────────────
+       CAREER TIMELINE
+    ──────────────────────────── */
+    .timeline {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0;
+    }
+    .tl-left {
+      padding-top: 4px;
+      text-align: right;
+      padding-right: 36px;
+      position: relative;
+    }
+    .tl-left::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 12px; bottom: -60px;
+      width: 1px;
+      background: var(--line);
+    }
+    .tl-right {
+      padding-left: 36px;
+      padding-bottom: 56px;
+      position: relative;
+    }
+    .tl-right::before {
+      content: '';
+      position: absolute;
+      left: -5px; top: 10px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1.5px solid var(--gold);
+    }
+    .tl-item:last-child .tl-left::after { display: none; }
+    .tl-item:last-child .tl-right { padding-bottom: 0; }
+
+    .tl-period {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.78rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      font-weight: 400;
+    }
+    .tl-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+    .tl-desc {
+      font-size: 0.88rem;
+      color: var(--mid);
+      line-height: 1.9;
+      font-weight: 300;
+    }
+    .tl-item { display: contents; }
+
+    /* ────────────────────────────
+       CREDENTIALS — 資格グリッド
+    ──────────────────────────── */
+    .cred-wrap { background: var(--ink); }
+    .cred-wrap .sec-heading { color: var(--white); }
+
+    .cred-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2px;
+      border: 1px solid rgba(184,150,90,0.2);
+    }
+    .cred-item {
+      padding: 32px 28px;
+      border: 1px solid rgba(184,150,90,0.1);
+      position: relative;
+      transition: background 0.3s;
+    }
+    .cred-item:hover { background: rgba(184,150,90,0.06); }
+    .cred-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      color: rgba(184,150,90,0.2);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .cred-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .cred-sub {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.08em;
+    }
+
+    /* ────────────────────────────
+       COMPETENCIES — 4領域
+    ──────────────────────────── */
+    .comp-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .comp-item {
+      background: var(--paper);
+      padding: 44px 40px;
+      transition: background 0.3s;
+    }
+    .comp-item:hover { background: #f0ede6; }
+    .comp-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .comp-num::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    .comp-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+    .comp-desc {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.9;
+      font-weight: 300;
+    }
+
+    /* ────────────────────────────
+       TALENT — 歌の才能
+    ──────────────────────────── */
+    .talent-wrap {
+      background: var(--charcoal);
+      position: relative;
+      overflow: hidden;
+    }
+    .talent-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .talent-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      opacity: 0.9;
+    }
+    .talent-count span {
+      display: block;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.15em;
+      margin-top: 8px;
+    }
+    .talent-body h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 600;
+      color: var(--white);
+      line-height: 1.4;
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+    }
+    .talent-body p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 2;
+      font-weight: 300;
+      max-width: 480px;
+    }
+    .talent-body p em {
+      font-style: normal;
+      color: var(--gold-lt);
+    }
+    .talent-genres {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .genre-tag {
+      border: 1px solid rgba(184,150,90,0.4);
+      color: var(--gold);
+      padding: 5px 14px;
+      font-size: 0.73rem;
+      letter-spacing: 0.12em;
+    }
+
+    /* ────────────────────────────
+       LIFESTYLE — 趣味
+    ──────────────────────────── */
+    .lifestyle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+    }
+    .life-item {
+      border-top: 1px solid var(--line);
+      padding-top: 20px;
+      transition: border-color 0.2s;
+    }
+    .life-item:hover { border-color: var(--gold); }
+    .life-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .life-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+
+    /* ────────────────────────────
+       CHARACTER — 人柄
+    ──────────────────────────── */
+    .char-wrap { background: var(--ink); }
+    .char-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(184,150,90,0.15);
+      border: 1px solid rgba(184,150,90,0.15);
+    }
+    .char-item {
+      background: var(--charcoal);
+      padding: 36px 28px;
+      transition: background 0.3s;
+    }
+    .char-item:hover { background: var(--slate); }
+    .char-bar {
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      margin-bottom: 16px;
+    }
+    .char-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .char-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.72rem;
+      color: rgba(184,150,90,0.6);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* ────────────────────────────
+       VISION
+    ──────────────────────────── */
+    .vision-wrap { background: var(--paper); }
+    .vision-box {
+      border: 1px solid var(--line);
+      padding: 64px;
+      position: relative;
+    }
+    .vision-box::before,
+    .vision-box::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.5;
+    }
+    .vision-box::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .vision-box::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+    .vision-tag {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .vision-statement {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+    }
+    .vision-statement em {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .vision-desc {
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 2;
+      font-weight: 300;
+      max-width: 520px;
+    }
+
+    /* ────────────────────────────
+       CONTACT
+    ──────────────────────────── */
+    .contact-wrap { background: var(--ink); }
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .contact-left h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    .contact-left p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.4);
+      line-height: 2;
+      font-weight: 300;
+    }
+    .contact-right {
+      padding-top: 8px;
+    }
+    .contact-firm {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .contact-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .contact-subtitle {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.1em;
+      margin-bottom: 36px;
+    }
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      padding: 16px 32px;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: background 0.3s, color 0.3s;
+    }
+    .contact-btn:hover {
+      background: var(--gold);
+      color: var(--ink);
+    }
+    .contact-btn::after {
+      content: '→';
+      font-size: 1rem;
+    }
+
+    /* ────────────────────────────
+       FOOTER
+    ──────────────────────────── */
+    footer {
+      background: #0c0c12;
+      padding: 28px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    footer .ft-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.15em;
+    }
+    footer .ft-copy {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.1em;
+    }
+
+    /* ────────────────────────────
+       RESPONSIVE
+    ──────────────────────────── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 60px 32px; }
+      .scroll-hint { left: 32px; }
+      .nav-links { display: none; }
+      .section { padding: 70px 24px; }
+      .comp-grid { grid-template-columns: 1fr; }
+      .char-list { grid-template-columns: 1fr 1fr; }
+      .talent-inner { grid-template-columns: 1fr; gap: 20px; }
+      .talent-count { font-size: 5rem; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .vision-box { padding: 36px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow"><span>Architect &amp; Entrepreneur</span></div>
+
+    <h1><strong>髙原</strong> 慎司</h1>
+    <span class="hero-nick">― Shinji Takahara ―</span>
+
+    <div class="hero-divider"></div>
+
+    <p class="hero-tagline">
+      現場から設計図へ。<br>
+      職人の眼と建築家の知性で、<br>
+      <em>人が誇りを持って暮らせる空間</em>を設計する。
+    </p>
+
+    <div class="hero-licenses">
+      <div class="license-row primary">一級建築士</div>
+      <div class="license-row primary">一級施工管理技士 &nbsp;／&nbsp; 宅地建物取引士</div>
+      <div class="license-row">Highland House &nbsp;代表 &nbsp;―&nbsp; 工務店・不動産・建築士事務所</div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="blueprint">
+      <div class="bp-outer"></div>
+      <div class="bp-inner"></div>
+      <div class="bp-rotate"></div>
+      <div class="bp-corner tl"></div>
+      <div class="bp-corner tr"></div>
+      <div class="bp-corner bl"></div>
+      <div class="bp-corner br"></div>
+      <div class="bp-cross">
+        <div class="bp-circle">
+          <div class="bp-circle-inner">
+            <span class="bp-initials">ST</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <span class="nav-logo">髙原 慎司</span>
+    <ul class="nav-links">
+      <li><a href="#career">Career</a></li>
+      <li><a href="#credentials">Credentials</a></li>
+      <li><a href="#talent">Talent</a></li>
+      <li><a href="#vision">Vision</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══════════ ABOUT QUOTE ══════════ -->
+<div class="about-wrap">
+  <div class="section narrow">
+    <blockquote class="about-quote">
+      大工として<em>木の声を聴き</em>、<br>
+      建築士として<em>空間を設計し</em>、<br>
+      経営者として<em>地域の暮らしを守る</em>。<br>
+      それが私の仕事です。
+    </blockquote>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ CAREER ══════════ -->
+<div id="career">
+  <div class="section">
+    <div class="sec-eyebrow">Career Story</div>
+    <div class="sec-heading">歩んできた道</div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-period">起点</span></div>
+        <div class="tl-right">
+          <div class="tl-title">高校卒業 ― 大工見習いとしてスタート</div>
+          <div class="tl-desc">現場の最前線で、木と格闘し、職人の技と精神を身体で覚える。ノミとカンナが最初の「設計ツール」だった。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-period">研鑽</span></div>
+        <div class="tl-right">
+          <div class="tl-title">夜間・職業訓練校で理論と資格を習得</div>
+          <div class="tl-desc">昼間は現場で汗をかき、夜は教室で図面と法規を学んだ。二級・一級建築士、施工管理技士、宅建士を順に取得。実務と学術を統合した希有な経験。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-period">独立</span></div>
+        <div class="tl-right">
+          <div class="tl-title">工務店・一級建築士事務所を開業</div>
+          <div class="tl-desc">施工・設計・不動産の三機能を一体で提供するスタイルを確立。職人から建築家へ、そして経営者へと自らを進化させた。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left"><span class="tl-period">現在</span></div>
+        <div class="tl-right">
+          <div class="tl-title">Highland House 代表 ― 三社一体経営</div>
+          <div class="tl-desc">工務店・不動産・一級建築士事務所を統合的に経営。AI活用・テクノロジー導入で業界の次世代スタンダードを切り拓く。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ CREDENTIALS ══════════ -->
+<div class="cred-wrap" id="credentials">
+  <div class="section">
+    <div class="sec-eyebrow" style="color:var(--gold)">Qualifications</div>
+    <div class="sec-heading">保有資格</div>
+    <div class="cred-grid">
+      <div class="cred-item">
+        <div class="cred-number">01</div>
+        <div class="cred-title">一級建築士</div>
+        <div class="cred-sub">First-Class Architect</div>
+      </div>
+      <div class="cred-item">
+        <div class="cred-number">02</div>
+        <div class="cred-title">二級建築士</div>
+        <div class="cred-sub">Second-Class Architect</div>
+      </div>
+      <div class="cred-item">
+        <div class="cred-number">03</div>
+        <div class="cred-title">木造建築士</div>
+        <div class="cred-sub">Timber Architect</div>
+      </div>
+      <div class="cred-item">
+        <div class="cred-number">04</div>
+        <div class="cred-title">宅地建物取引士</div>
+        <div class="cred-sub">Real Estate Broker</div>
+      </div>
+      <div class="cred-item">
+        <div class="cred-number">05</div>
+        <div class="cred-title">一級施工管理技士</div>
+        <div class="cred-sub">Construction Manager</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ COMPETENCIES ══════════ -->
+<div>
+  <div class="section">
+    <div class="sec-eyebrow">Expertise</div>
+    <div class="sec-heading">専門領域</div>
+    <div class="comp-grid">
+      <div class="comp-item">
+        <div class="comp-num">01</div>
+        <div class="comp-title">建築設計</div>
+        <div class="comp-desc">住宅から店舗・商業施設まで、一級建築士として意匠・構造・設備を統合した質の高い設計を提供する。現場を知る建築家ならではの、実現可能で美しい設計。</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-num">02</div>
+        <div class="comp-title">施工管理・現場統括</div>
+        <div class="comp-desc">一級施工管理技士として安全・品質・工程・コストの四軸を高水準でコントロール。大工としての現場感覚が、机上の管理に終わらない実践力を支える。</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-num">03</div>
+        <div class="comp-title">不動産コンサルティング</div>
+        <div class="comp-desc">宅建士として物件売買・賃貸・土地活用を専門的にサポート。設計・施工の知識と組み合わせることで、土地から完成まで一気通貫のアドバイスが可能。</div>
+      </div>
+      <div class="comp-item">
+        <div class="comp-num">04</div>
+        <div class="comp-title">AI・テクノロジー活用</div>
+        <div class="comp-desc">Cursor等のAIツールを積極的に学習・導入。設計業務の効率化、顧客コミュニケーションの高度化、新サービス開発など、建築×AIの最前線に挑戦する。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ TALENT ══════════ -->
+<div class="talent-wrap" id="talent">
+  <div class="section">
+    <div class="sec-eyebrow" style="color:var(--gold)">Beyond Architecture</div>
+    <div class="talent-inner">
+      <div>
+        <div class="talent-count">19<span>Scout offers in 20s</span></div>
+      </div>
+      <div class="talent-body">
+        <h3>20代で19回のスカウトを受けた、<br>もうひとつの顔。</h3>
+        <p>
+          英語のオールディーズから演歌まで、ジャンルを軽やかに越えていく歌声。<br>
+          <em>ひとを惹きつけ、場の空気を変える力</em> ―― それは建築と同じ、<br>
+          「空間と人の感情をデザインする」才能の別の表れかもしれない。
+        </p>
+        <div class="talent-genres">
+          <span class="genre-tag">English Oldies</span>
+          <span class="genre-tag">演歌</span>
+          <span class="genre-tag">J-Pop</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ LIFESTYLE ══════════ -->
+<div>
+  <div class="section">
+    <div class="sec-eyebrow">Lifestyle</div>
+    <div class="sec-heading">趣味・嗜好</div>
+    <div class="lifestyle-grid">
+      <div class="life-item">
+        <span class="life-icon">🎵</span>
+        <div class="life-name">音楽鑑賞</div>
+      </div>
+      <div class="life-item">
+        <span class="life-icon">🎬</span>
+        <div class="life-name">映画鑑賞</div>
+      </div>
+      <div class="life-item">
+        <span class="life-icon">✈️</span>
+        <div class="life-name">旅行</div>
+      </div>
+      <div class="life-item">
+        <span class="life-icon">⛩️</span>
+        <div class="life-name">神社巡り</div>
+      </div>
+      <div class="life-item">
+        <span class="life-icon">♨️</span>
+        <div class="life-name">温泉</div>
+      </div>
+      <div class="life-item">
+        <span class="life-icon">🧖</span>
+        <div class="life-name">サウナ</div>
+      </div>
+      <div class="life-item">
+        <span class="life-icon">🎤</span>
+        <div class="life-name">歌</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ CHARACTER ══════════ -->
+<div class="char-wrap">
+  <div class="section">
+    <div class="sec-eyebrow" style="color:var(--gold)">Character</div>
+    <div class="sec-heading" style="color:var(--white)">人柄</div>
+    <div class="char-list">
+      <div class="char-item">
+        <div class="char-bar"></div>
+        <div class="char-text">粘り強い</div>
+        <div class="char-en">Tenacious</div>
+      </div>
+      <div class="char-item">
+        <div class="char-bar"></div>
+        <div class="char-text">チャレンジ精神</div>
+        <div class="char-en">Challenger</div>
+      </div>
+      <div class="char-item">
+        <div class="char-bar"></div>
+        <div class="char-text">行動力</div>
+        <div class="char-en">Action-Oriented</div>
+      </div>
+      <div class="char-item">
+        <div class="char-bar"></div>
+        <div class="char-text">慎重さ</div>
+        <div class="char-en">Deliberate</div>
+      </div>
+      <div class="char-item">
+        <div class="char-bar"></div>
+        <div class="char-text">温厚・やさしさ</div>
+        <div class="char-en">Warm-hearted</div>
+      </div>
+      <div class="char-item">
+        <div class="char-bar"></div>
+        <div class="char-text">積極性</div>
+        <div class="char-en">Proactive</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ VISION ══════════ -->
+<div class="vision-wrap" id="vision">
+  <div class="section">
+    <div class="sec-eyebrow">Vision</div>
+    <div class="sec-heading">目指す未来</div>
+    <div class="vision-box">
+      <div class="vision-tag">Next Stage</div>
+      <div class="vision-statement">
+        <em>建築の経験知</em>と<em>AIの処理知</em>を融合させ、<br>
+        業務の質と速度を同時に引き上げる。<br>
+        テクノロジーを武器に、地域に根ざした<br>
+        建築の新しい姿をつくっていく。
+      </div>
+      <p class="vision-desc">
+        長年の現場経験と経営判断力に、最新のAIツールを掛け合わせる。
+        設計の効率化・顧客体験の向上・新サービスの創出を通じて、
+        Highland Houseを「建築×テクノロジー」の先進事務所へと進化させることが、今の目標です。
+      </p>
+    </div>
+  </div>
+</div>
+
+<hr class="thin-rule">
+
+<!-- ══════════ CONTACT ══════════ -->
+<div class="contact-wrap" id="contact">
+  <div class="section">
+    <div class="contact-inner">
+      <div class="contact-left">
+        <div class="sec-eyebrow" style="color:var(--gold)">Contact</div>
+        <h2>お気軽に<br>ご相談ください。</h2>
+        <p>
+          家づくり・土地活用・リノベーション・<br>
+          不動産売買など、住まいに関することなら<br>
+          どんな小さなご相談でも歓迎します。
+        </p>
+      </div>
+      <div class="contact-right">
+        <div class="contact-firm">Highland House</div>
+        <div class="contact-name">髙原 慎司</div>
+        <div class="contact-subtitle">一級建築士 / 宅地建物取引士 / 代表</div>
+        <a class="contact-btn" href="https://www.highlandhouse.co.jp/" target="_blank" rel="noopener">
+          公式サイトを開く
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <span class="ft-logo">HIGHLAND HOUSE &nbsp;/&nbsp; 髙原 慎司</span>
+  <span class="ft-copy">© 2026 Shinji Takahara. All rights reserved.</span>
+</footer>
+
+</body>
+</html>

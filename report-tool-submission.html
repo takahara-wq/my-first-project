@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>面倒な報告を自動化するツール｜設計図解（提出用）</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print { a { text-decoration: none !important; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="max-w-5xl mx-auto px-6 py-10">
+    <!-- Header -->
+    <header class="mb-10">
+      <div class="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm border">
+        <span class="text-xs font-semibold text-slate-600">AI-Driven School 課題</span>
+        <span class="text-xs text-slate-400">｜</span>
+        <span class="text-xs font-semibold text-slate-600">面倒な報告の自動化</span>
+      </div>
+      <h1 class="mt-4 text-3xl font-bold tracking-tight">「週次 現場・見積・請求サマリー」を自動生成して共有する</h1>
+      <p class="mt-3 text-slate-600 leading-relaxed">
+        毎週繰り返し発生する <span class="font-semibold">現場進捗・見積・請求・証憑整理</span> の報告を、
+        データ取得→整形→要点化→共有まで一気通貫で自動化するツールの設計図です。
+      </p>
+      <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+        <span class="font-semibold">提出のしかた（この設計での前提）</span>：
+        本HTMLと <code class="rounded bg-white/80 px-1.5 py-0.5 text-xs">report-sample.png</code> を
+        <span class="font-semibold">同じフォルダ</span>に置き、<span class="font-semibold">ZIP</span>にまとめて提出します。
+        画像はスプレッドシートの画面（集計行＋次アクション列が同じ画面）を想定し、会社名・案件名・請求書番号などは標準マスク済みのものを使います。
+      </div>
+    </header>
+
+    <!-- Screenshot -->
+    <section class="bg-white border shadow-sm rounded-2xl p-6 mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
+        <h2 class="text-xl font-bold">レポート画面の見本（スクリーンショット）</h2>
+        <p class="text-xs text-slate-500 shrink-0">※実データ利用時は氏名・会社名・案件名・請求書番号などをモザイク</p>
+      </div>
+
+      <div class="mt-4 rounded-xl border bg-slate-100 overflow-hidden">
+        <img
+          src="./report-sample.png"
+          alt="週次サマリー：スプレッドシート上の集計（件数・金額・未処理）と次アクション列のスクリーンショット見本"
+          class="w-full h-auto object-contain bg-white"
+          width="1200"
+          height="675"
+          loading="lazy"
+          decoding="async"
+        />
+        <p class="border-t px-4 py-2 text-xs text-slate-600 bg-slate-50">
+          ブラウザで画像が欠けている場合は、ZIP展開フォルダ内に <code class="rounded bg-white px-1">report-sample.png</code> があるか確認してください。
+        </p>
+      </div>
+
+      <p class="mt-4 text-sm text-slate-600">
+        画面上は<span class="font-semibold">今週の数字（件数・金額・未処理）</span>と<span class="font-semibold">次アクション</span>が
+        <span class="font-semibold">同じスクショ内</span>で読み取れるようにします（一覧だけのスクショは避ける）。
+      </p>
+    </section>
+
+    <!-- 4 parts -->
+    <section class="bg-white border shadow-sm rounded-2xl p-6 mb-8">
+      <h2 class="text-xl font-bold">報告を自動化する4つのパーツ</h2>
+      <p class="mt-2 text-slate-600 text-sm leading-relaxed">
+        自動化の設計は「トリガー／ソース元／処理する場所／届ける先」を先に固定し、実装で迷わないようにします。
+      </p>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="rounded-xl border p-4 bg-slate-50">
+          <div class="text-xs font-semibold text-slate-500">TRIGGER</div>
+          <div class="mt-1 text-lg font-bold">トリガー</div>
+          <ul class="mt-2 text-sm text-slate-700 list-disc pl-5 space-y-1">
+            <li>毎週（金）17:30 に自動実行（例：GitHub Actions）</li>
+            <li>または「生成ボタン」で手動（本課題では設計・見本優先ならここからで十分）</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border p-4 bg-slate-50">
+          <div class="text-xs font-semibold text-slate-500">SOURCE</div>
+          <div class="mt-1 text-lg font-bold">ソース元</div>
+          <ul class="mt-2 text-sm text-slate-700 list-disc pl-5 space-y-1">
+            <li>案件/見積/請求の一覧（スプレッドシート → 必要に応じてCSVエクスポート）</li>
+            <li>証憑（メール/LINE受領PDF）の保管フォルダ（Share/Drive 等）</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border p-4 bg-slate-50">
+          <div class="text-xs font-semibold text-slate-500">PROCESS</div>
+          <div class="mt-1 text-lg font-bold">処理する場所</div>
+          <ul class="mt-2 text-sm text-slate-700 list-disc pl-5 space-y-1">
+            <li>CSVを読み込み → 集計（件数/金額/未処理）</li>
+            <li>AIで「要点／リスク／次アクション」を文章化</li>
+            <li>完成形HTMLテンプレへ流し込み</li>
+            <li>バリデーション：必須項目欠けや数値欠落なら停止</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border p-4 bg-slate-50">
+          <div class="text-xs font-semibold text-slate-500">DELIVERY</div>
+          <div class="mt-1 text-lg font-bold">届ける先</div>
+          <ul class="mt-2 text-sm text-slate-700 list-disc pl-5 space-y-1">
+            <li><span class="font-semibold">本課題の提出</span>：<code class="text-xs rounded bg-white px-1 border">report-tool-submission.html</code> ＋ <code class="text-xs rounded bg-white px-1 border">report-sample.png</code> をZIPでアップロード</li>
+            <li><span class="font-semibold">運用時の選択肢（将来）</span>：Surge等でHTMLを公開しURL共有／メール・Slack・LINEへリンク通知</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 rounded-xl border bg-white p-5">
+        <div class="text-sm font-semibold text-slate-700 mb-3">処理フロー（ざっくり）</div>
+        <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+          <div class="flex-1 rounded-lg border bg-slate-50 p-3">
+            <div class="text-xs text-slate-500 font-semibold">Trigger</div>
+            <div class="font-bold">定期 or ボタン</div>
+          </div>
+          <div class="text-center text-slate-400 font-bold md:block hidden">→</div>
+          <div class="flex-1 rounded-lg border bg-slate-50 p-3">
+            <div class="text-xs text-slate-500 font-semibold">Source</div>
+            <div class="font-bold">スプレッドシート / CSV</div>
+          </div>
+          <div class="text-center text-slate-400 font-bold md:block hidden">→</div>
+          <div class="flex-1 rounded-lg border bg-slate-50 p-3">
+            <div class="text-xs text-slate-500 font-semibold">Process</div>
+            <div class="font-bold">集計＋AI要約</div>
+          </div>
+          <div class="text-center text-slate-400 font-bold md:block hidden">→</div>
+          <div class="flex-1 rounded-lg border bg-slate-50 p-3">
+            <div class="text-xs text-slate-500 font-semibold">Delivery</div>
+            <div class="font-bold">ZIP提出 / URL共有</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tips -->
+    <section class="bg-white border shadow-sm rounded-2xl p-6">
+      <h2 class="text-xl font-bold">工夫したポイント（提出用）</h2>
+      <ul class="mt-4 text-sm text-slate-700 list-disc pl-5 space-y-2">
+        <li><span class="font-semibold">完成形のHTMLを先に固定</span>し、AIの出力ブレを抑える（テンプレに流し込む設計）。</li>
+        <li><span class="font-semibold">4パーツを先に決めて</span>トリガー／ソース／処理／届け先の境界を明示した。</li>
+        <li><span class="font-semibold">バリデーション</span>で必須欠けや数値欠落を検知し、誤報告を止める設計。</li>
+        <li><span class="font-semibold">スクショの狙いを固定</span>（集計行＋次アクションが同じ画面）し、説明との一貫性を保つ。</li>
+        <li><span class="font-semibold">提出経路も固定</span>（HTML＋PNGを同フォルダでZIP）し、評価者側でリンク切れを起こしにくくする。</li>
+        <li>機密配慮：スクショは標準マスク前提。データはスプシと証憑フォルダを分けて運用する想定。</li>
+      </ul>
+
+      <div class="mt-6 rounded-xl bg-slate-900 text-white p-5">
+        <div class="text-sm font-semibold">提出の一言（発表でも使える）</div>
+        <p class="mt-2 text-sm text-slate-200 leading-relaxed">
+          「毎週の現場・見積・請求の報告が負荷になっていたので、データ取得→集計→AI要点化→HTML化→共有までを一気通貫で自動化する設計にしました。
+          本課題では<strong class="font-semibold text-white">設計と見本スクショ</strong>までを示し、実装の自動実行はこの設計を土台に進めます。」
+        </p>
+      </div>
+    </section>
+
+    <footer class="mt-10 text-xs text-slate-500">
+      © 2026 Report Tool Design (Submission)
+    </footer>
+  </main>
+</body>
+</html>

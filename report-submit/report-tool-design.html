@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>工程報告ツール 設計図解</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── ヘッダー ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .page-header .tag {
+      display: inline-block;
+      border: 1px solid #f59e0b;
+      color: #f59e0b;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      padding: 5px 18px;
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 0.88rem;
+      color: #64748b;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── シナリオ説明 ── */
+    .scenario {
+      max-width: 860px;
+      margin: 0 auto 56px;
+      background: linear-gradient(135deg, #1e1b14, #1a1a2e);
+      border: 1px solid #334155;
+      border-left: 4px solid #ef4444;
+      border-radius: 12px;
+      padding: 24px 28px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .scenario-icon { font-size: 2.4rem; flex-shrink: 0; }
+    .scenario h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ef4444;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .scenario p {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.8;
+    }
+    .scenario strong { color: #fbbf24; }
+
+    /* ── メイン図解エリア ── */
+    .diagram {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── 4カラムグリッド ── */
+    .four-col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    /* 列ヘッダー */
+    .col-header {
+      padding: 16px 20px;
+      text-align: center;
+      border-bottom: 1px solid #1e293b;
+    }
+    .col-header .col-num {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .col-header .col-name {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .col-header .col-en {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      margin-top: 3px;
+      opacity: 0.5;
+    }
+
+    /* 色テーマ */
+    .col-trigger  { background: rgba(239,68,68,0.08);  border: 1px solid rgba(239,68,68,0.25); }
+    .col-source   { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); border-left: none; }
+    .col-process  { background: rgba(59,130,246,0.08);  border: 1px solid rgba(59,130,246,0.25); border-left: none; }
+    .col-deliver  { background: rgba(34,197,94,0.08);  border: 1px solid rgba(34,197,94,0.25); border-left: none; }
+
+    .col-trigger  .col-num  { color: #ef4444; }
+    .col-trigger  .col-name { color: #fca5a5; }
+    .col-source   .col-num  { color: #f59e0b; }
+    .col-source   .col-name { color: #fcd34d; }
+    .col-process  .col-num  { color: #3b82f6; }
+    .col-process  .col-name { color: #93c5fd; }
+    .col-deliver  .col-num  { color: #22c55e; }
+    .col-deliver  .col-name { color: #86efac; }
+
+    /* 列コンテンツ */
+    .col-body {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 340px;
+    }
+
+    /* カード */
+    .item-card {
+      border-radius: 10px;
+      padding: 14px 16px;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .item-card:hover { transform: scale(1.02); }
+
+    .col-trigger  .item-card { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3); }
+    .col-source   .item-card { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .col-process  .item-card { background: rgba(59,130,246,0.12);  border: 1px solid rgba(59,130,246,0.3); }
+    .col-deliver  .item-card { background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.3); }
+
+    .item-card .ic-icon { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+    .item-card .ic-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 4px;
+    }
+    .item-card .ic-desc {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    /* 主要カード（大きめ） */
+    .item-card.main {
+      padding: 18px 16px;
+    }
+    .item-card.main .ic-title {
+      font-size: 0.95rem;
+    }
+
+    /* ── 流れ矢印ライン ── */
+    .flow-arrows {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-bottom: 0;
+      padding: 16px 0;
+      position: relative;
+    }
+    .flow-arrows::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 12.5%;
+      right: 12.5%;
+      height: 2px;
+      background: linear-gradient(90deg,
+        rgba(239,68,68,0.6) 0%,
+        rgba(245,158,11,0.6) 33%,
+        rgba(59,130,246,0.6) 66%,
+        rgba(34,197,94,0.6) 100%
+      );
+      transform: translateY(-50%);
+    }
+    .arrow-node {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .arrow-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid;
+    }
+    .arrow-dot.trigger { border-color: #ef4444; background: rgba(239,68,68,0.3); }
+    .arrow-dot.source  { border-color: #f59e0b; background: rgba(245,158,11,0.3); }
+    .arrow-dot.process { border-color: #3b82f6; background: rgba(59,130,246,0.3); }
+    .arrow-dot.deliver { border-color: #22c55e; background: rgba(34,197,94,0.3); }
+
+    /* ── 中央の処理BOX ── */
+    .center-box-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 0 0 48px;
+    }
+    .center-box {
+      background: linear-gradient(135deg, #1e3a8a, #1e1b4b);
+      border: 1px solid rgba(99,102,241,0.5);
+      border-radius: 16px;
+      padding: 32px 40px;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 0 40px rgba(99,102,241,0.15);
+    }
+    .center-box::before,
+    .center-box::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: -32px;
+      width: 32px; height: 2px;
+      background: linear-gradient(90deg, rgba(245,158,11,0.6), rgba(99,102,241,0.8));
+    }
+    .center-box::after {
+      left: auto; right: -32px;
+      background: linear-gradient(90deg, rgba(99,102,241,0.8), rgba(34,197,94,0.6));
+    }
+    .center-box .cb-tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: #818cf8;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .center-box h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .center-box .cb-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+    .cb-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .cb-step .step-num {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #818cf8;
+      background: rgba(99,102,241,0.2);
+      border-radius: 4px;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .cb-step p {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    /* ── ビフォー・アフター比較 ── */
+    .ba-section {
+      max-width: 1100px;
+      margin: 0 auto 48px;
+    }
+    .ba-title {
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: #475569;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .ba-grid {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+    .ba-box {
+      border-radius: 14px;
+      padding: 28px;
+    }
+    .ba-box.before {
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.2);
+    }
+    .ba-box.after {
+      background: rgba(34,197,94,0.06);
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+    .ba-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      margin-bottom: 16px;
+    }
+    .ba-box.before .ba-label { color: #ef4444; }
+    .ba-box.after  .ba-label { color: #22c55e; }
+    .ba-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .ba-list li {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      padding-left: 20px;
+      position: relative;
+    }
+    .ba-list li::before {
+      content: attr(data-icon);
+      position: absolute;
+      left: 0;
+    }
+    .ba-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      padding-top: 60px;
+    }
+
+    /* ── 期待効果 ── */
+    .effect-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .effect-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .effect-card .ec-icon { font-size: 2rem; margin-bottom: 10px; }
+    .effect-card .ec-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #60a5fa, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .effect-card .ec-label {
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+
+    /* ── セクション見出し ── */
+    .section-title {
+      max-width: 1100px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #475569;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #1e293b;
+    }
+
+    @media (max-width: 768px) {
+      .four-col { grid-template-columns: 1fr 1fr; }
+      .col-source { border-left: 1px solid rgba(245,158,11,0.25); }
+      .col-process { border-left: none; border-top: none; }
+      .col-deliver { border-top: none; }
+      .ba-grid { grid-template-columns: 1fr; }
+      .ba-center { display: none; }
+      .flow-arrows { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="page-header">
+  <div class="tag">REPORTING TOOL DESIGN</div>
+  <h1>工程報告ツール 設計図解</h1>
+  <p>塗装工事 ／ 突発的な天候変化による工程変更の通知フロー</p>
+</div>
+
+<!-- シナリオ説明 -->
+<div class="scenario">
+  <div class="scenario-icon">🌧️</div>
+  <div>
+    <h3>PROBLEM SCENARIO ― 今起きている「面倒」</h3>
+    <p>
+      塗装工事の工程を計画通りに進めていたが、<strong>天気予報に出ていなかった雨が突然降り始め</strong>、
+      工程がずれてしまった。<br>
+      お客様・近隣住人への告知のため、<strong>手作業で張り紙を作成し、一軒ずつ配って回る必要があった</strong>。
+      作業者の時間と手間が大量にかかり、伝わるまでの時間もかかる。
+    </p>
+  </div>
+</div>
+
+<!-- ① 4分類フロー図 -->
+<div class="section-title">① 情報フロー分類図</div>
+
+<div class="diagram">
+  <div class="four-col">
+
+    <!-- TRIGGER -->
+    <div class="col-trigger">
+      <div class="col-header">
+        <div class="col-num">STEP 01</div>
+        <div class="col-name">トリガー</div>
+        <div class="col-en">Trigger</div>
+      </div>
+      <div class="col-body">
+        <div class="item-card main">
+          <span class="ic-icon">🌧️</span>
+          <div class="ic-title">突発的な降雨</div>
+          <div class="ic-desc">予報外の雨が発生。工程続行が不可能になった瞬間が起点。</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">📋</span>
+          <div class="ic-title">工程変更の確定</div>
+          <div class="ic-desc">現場責任者が「本日の作業中止・日程変更」を判断</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">⏰</span>
+          <div class="ic-title">即時通知の必要性</div>
+          <div class="ic-desc">お客様・近隣への告知を速やかに行わなければならない</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOURCE -->
+    <div class="col-source">
+      <div class="col-header">
+        <div class="col-num">STEP 02</div>
+        <div class="col-name">ソース元</div>
+        <div class="col-en">Data Source</div>
+      </div>
+      <div class="col-body">
+        <div class="item-card main">
+          <span class="ic-icon">🗓️</span>
+          <div class="ic-title">元の工程表</div>
+          <div class="ic-desc">予定していた施工日・作業内容・完了予定日</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🌤️</span>
+          <div class="ic-title">気象情報</div>
+          <div class="ic-desc">現在の降雨状況・翌日以降の天気予報データ</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">👤</span>
+          <div class="ic-title">施主情報</div>
+          <div class="ic-desc">お客様の名前・連絡先・現場住所</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🏘️</span>
+          <div class="ic-title">近隣住民情報</div>
+          <div class="ic-desc">告知対象の世帯数・住所・配布範囲</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROCESS -->
+    <div class="col-process">
+      <div class="col-header">
+        <div class="col-num">STEP 03</div>
+        <div class="col-name">処理する場所</div>
+        <div class="col-en">Processing</div>
+      </div>
+      <div class="col-body">
+        <div class="item-card main">
+          <span class="ic-icon">🤖</span>
+          <div class="ic-title">報告ツール（AI処理）</div>
+          <div class="ic-desc">入力情報をもとに通知文・張り紙を自動生成</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">📝</span>
+          <div class="ic-title">お客様向け文書生成</div>
+          <div class="ic-desc">丁寧な言葉遣いのお知らせ文を自動作成</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🪧</span>
+          <div class="ic-title">張り紙データ生成</div>
+          <div class="ic-desc">印刷対応のA4張り紙PDFを即時生成</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🔄</span>
+          <div class="ic-title">工程表の自動更新</div>
+          <div class="ic-desc">ずれた日程を再計算して新工程表を出力</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELIVER -->
+    <div class="col-deliver">
+      <div class="col-header">
+        <div class="col-num">STEP 04</div>
+        <div class="col-name">届ける先</div>
+        <div class="col-en">Delivery</div>
+      </div>
+      <div class="col-body">
+        <div class="item-card main">
+          <span class="ic-icon">👷</span>
+          <div class="ic-title">現場作業員</div>
+          <div class="ic-desc">作業中止・次回日程をLINEや口頭で即時共有</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🏠</span>
+          <div class="ic-title">お客様（施主）</div>
+          <div class="ic-desc">電話・メール・LINEでお知らせ文を送付</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🏘️</span>
+          <div class="ic-title">近隣住民</div>
+          <div class="ic-desc">印刷した張り紙を各戸に配布（ポスティング）</div>
+        </div>
+        <div class="item-card">
+          <span class="ic-icon">🏢</span>
+          <div class="ic-title">社内（経営者）</div>
+          <div class="ic-desc">工程遅延レポートを自動で報告・記録</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.four-col -->
+
+  <!-- 矢印ライン -->
+  <div class="flow-arrows">
+    <div class="arrow-node"><div class="arrow-dot trigger"></div></div>
+    <div class="arrow-node"><div class="arrow-dot source"></div></div>
+    <div class="arrow-node"><div class="arrow-dot process"></div></div>
+    <div class="arrow-node"><div class="arrow-dot deliver"></div></div>
+  </div>
+
+</div><!-- /.diagram -->
+
+<!-- ② 処理エンジン詳細 -->
+<div class="section-title" style="margin-top:48px;">② 処理エンジンの中身</div>
+
+<div class="center-box-wrap">
+  <div style="display:flex; align-items:center; gap:16px; max-width:900px; width:100%;">
+
+    <!-- 左ラベル -->
+    <div style="text-align:right; min-width:100px;">
+      <div style="font-size:0.72rem; color:#f59e0b; font-weight:700; letter-spacing:0.1em;">ソース元<br>から入力</div>
+    </div>
+    <div style="font-size:1.4rem; color:#f59e0b;">→</div>
+
+    <!-- 中央ボックス -->
+    <div class="center-box" style="position:relative; max-width:none; flex:1;">
+      <div class="cb-tag">PROCESSING ENGINE ／ 報告ツール処理部</div>
+      <h3>🤖 工程変更 自動通知エンジン</h3>
+      <div class="cb-steps">
+        <div class="cb-step">
+          <span class="step-num">01</span>
+          <p>トリガー受信：「雨天・工程変更」の入力を検知</p>
+        </div>
+        <div class="cb-step">
+          <span class="step-num">02</span>
+          <p>工程表を参照し、変更後の新スケジュールを自動計算</p>
+        </div>
+        <div class="cb-step">
+          <span class="step-num">03</span>
+          <p>天気予報データを取得し、次の施工可能日を提案</p>
+        </div>
+        <div class="cb-step">
+          <span class="step-num">04</span>
+          <p>お客様向けお知らせ文・近隣向け張り紙を自動生成</p>
+        </div>
+        <div class="cb-step">
+          <span class="step-num">05</span>
+          <p>各届け先（LINE・メール・印刷データ）へ自動配信</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右ラベル -->
+    <div style="font-size:1.4rem; color:#22c55e;">→</div>
+    <div style="min-width:100px;">
+      <div style="font-size:0.72rem; color:#22c55e; font-weight:700; letter-spacing:0.1em;">届け先へ<br>配信</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ③ ビフォー・アフター -->
+<div class="section-title">③ Before / After 比較</div>
+
+<div class="ba-section">
+  <div class="ba-grid">
+    <div class="ba-box before">
+      <div class="ba-label">😰 BEFORE ― 現状の手間</div>
+      <ul class="ba-list">
+        <li data-icon="❌">雨が降ったことに気づくのが遅れる</li>
+        <li data-icon="❌">工程表を手作業で修正し直す</li>
+        <li data-icon="❌">張り紙の文章を1から考えて手書き・印刷</li>
+        <li data-icon="❌">一軒ずつ歩いて配布して回る（時間・体力）</li>
+        <li data-icon="❌">お客様への電話連絡も別途必要</li>
+        <li data-icon="❌">社内への報告もメール等で改めて行う</li>
+        <li data-icon="❌">記録が残りにくく次回の参考にならない</li>
+      </ul>
+    </div>
+    <div class="ba-center">→</div>
+    <div class="ba-box after">
+      <div class="ba-label">✅ AFTER ― 報告ツール導入後</div>
+      <ul class="ba-list">
+        <li data-icon="✅">「工程変更」を入力するだけで全自動</li>
+        <li data-icon="✅">新工程表が即座に再計算・出力</li>
+        <li data-icon="✅">お知らせ文・張り紙が30秒で自動生成</li>
+        <li data-icon="✅">LINEやメールで施主に即時通知</li>
+        <li data-icon="✅">張り紙データをそのまま印刷→配布のみ</li>
+        <li data-icon="✅">社内への工程遅延レポートも自動送付</li>
+        <li data-icon="✅">変更履歴がデータとして蓄積・参照可能</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ④ 期待効果 -->
+<div class="section-title">④ 期待される効果</div>
+
+<div class="effect-grid">
+  <div class="effect-card">
+    <div class="ec-icon">⏱️</div>
+    <div class="ec-num">90<span style="font-size:1rem">%</span></div>
+    <div class="ec-label">通知作業時間の削減</div>
+  </div>
+  <div class="effect-card">
+    <div class="ec-icon">📄</div>
+    <div class="ec-num">30<span style="font-size:1rem">秒</span></div>
+    <div class="ec-label">張り紙生成までの時間</div>
+  </div>
+  <div class="effect-card">
+    <div class="ec-icon">😊</div>
+    <div class="ec-num">↑</div>
+    <div class="ec-label">施主・近隣住民の信頼感向上</div>
+  </div>
+  <div class="effect-card">
+    <div class="ec-icon">📊</div>
+    <div class="ec-num">∞</div>
+    <div class="ec-label">変更履歴の記録・分析</div>
+  </div>
+</div>
+
+</body>
+</html>

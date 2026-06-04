@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>APIとは？ 図解</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── ヘッダー ── */
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    header .eyebrow {
+      display: inline-block;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: #f1f5f9;
+      margin-bottom: 12px;
+    }
+    header h1 span {
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ── セクション共通 ── */
+    section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 24px 60px;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #1e293b;
+    }
+
+    /* ── ① ひとことで言うと ── */
+    .analogy-box {
+      background: linear-gradient(135deg, #1e293b, #0f2040);
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 36px;
+      text-align: center;
+    }
+    .analogy-box .scene {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .actor {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 140px;
+    }
+    .actor-icon {
+      font-size: 3rem;
+      filter: drop-shadow(0 0 12px rgba(56,189,248,0.4));
+    }
+    .actor-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .arrow-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+    }
+    .arrow-pill {
+      background: rgba(56,189,248,0.15);
+      border: 1px solid rgba(56,189,248,0.35);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      color: #38bdf8;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .arrow-pill.res {
+      background: rgba(129,140,248,0.15);
+      border-color: rgba(129,140,248,0.35);
+      color: #818cf8;
+    }
+    .arrow-line {
+      font-size: 1.4rem;
+      color: #475569;
+      line-height: 1;
+    }
+    .analogy-text {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .analogy-text strong { color: #38bdf8; }
+
+    /* ── ② 仕組みアニメーション ── */
+    .flow-diagram {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 36px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .flow-row {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr 80px 1fr;
+      align-items: center;
+      gap: 0;
+    }
+    .flow-box {
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .flow-box.app {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      box-shadow: 0 0 30px rgba(37,99,235,0.3);
+    }
+    .flow-box.api {
+      background: linear-gradient(135deg, #0f766e, #14b8a6);
+      box-shadow: 0 0 30px rgba(20,184,166,0.3);
+    }
+    .flow-box.server {
+      background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+      box-shadow: 0 0 30px rgba(139,92,246,0.3);
+    }
+    .flow-box-icon { font-size: 2rem; margin-bottom: 8px; }
+    .flow-box-name {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .flow-box-desc { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+
+    .flow-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+    .flow-arrow .req-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 0.05em;
+    }
+    .flow-arrow .res-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #818cf8;
+      letter-spacing: 0.05em;
+    }
+    .line-track {
+      width: 100%;
+      height: 34px;
+      position: relative;
+    }
+    .track-bg {
+      position: absolute;
+      top: 50%;
+      left: 0; right: 0;
+      height: 2px;
+      background: #334155;
+      transform: translateY(-50%);
+    }
+    /* 右向き点 */
+    .dot-right {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #38bdf8;
+      transform: translateY(-50%);
+      box-shadow: 0 0 8px #38bdf8;
+      animation: move-right 2s infinite linear;
+    }
+    /* 左向き点 */
+    .dot-left {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #818cf8;
+      transform: translateY(-50%);
+      box-shadow: 0 0 8px #818cf8;
+      animation: move-left 2s infinite linear;
+      animation-delay: 1s;
+    }
+    @keyframes move-right {
+      0%   { left: 0%;   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { left: 100%; opacity: 0; }
+    }
+    @keyframes move-left {
+      0%   { right: 0%;   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { right: 100%; opacity: 0; }
+    }
+
+    /* ── ③ ステップ解説 ── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 22px 24px;
+      transition: border-color 0.2s;
+    }
+    .step:hover { border-color: #38bdf8; }
+    .step-num {
+      min-width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+    .step:nth-child(1) .step-num { background: rgba(37,99,235,0.2); color: #60a5fa; border: 2px solid #2563eb; }
+    .step:nth-child(2) .step-num { background: rgba(20,184,166,0.2); color: #34d399; border: 2px solid #14b8a6; }
+    .step:nth-child(3) .step-num { background: rgba(139,92,246,0.2); color: #c084fc; border: 2px solid #8b5cf6; }
+    .step:nth-child(4) .step-num { background: rgba(251,191,36,0.2); color: #fbbf24; border: 2px solid #f59e0b; }
+    .step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: #f1f5f9; }
+    .step-content p  { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
+    .step-content code {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.82rem;
+      color: #38bdf8;
+      font-family: 'Consolas', monospace;
+    }
+
+    /* ── ④ 身近な例 ── */
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .example-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: transform 0.25s, border-color 0.25s;
+    }
+    .example-card:hover { transform: translateY(-4px); border-color: #64748b; }
+    .example-card .ex-icon { font-size: 2.4rem; margin-bottom: 12px; }
+    .example-card h4 { font-size: 0.95rem; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+    .example-card p  { font-size: 0.82rem; color: #64748b; line-height: 1.5; }
+
+    /* ── まとめバナー ── */
+    .summary {
+      background: linear-gradient(135deg, #1e293b, #0f2040);
+      border: 1px solid #334155;
+      border-top: 3px solid #38bdf8;
+      border-radius: 20px;
+      padding: 36px;
+      text-align: center;
+    }
+    .summary h2 { font-size: 1.4rem; font-weight: 800; color: #f1f5f9; margin-bottom: 12px; }
+    .summary p  { color: #94a3b8; font-size: 0.95rem; line-height: 1.7; max-width: 520px; margin: 0 auto; }
+    .summary strong { color: #38bdf8; }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header>
+  <div class="eyebrow">VISUAL GUIDE</div>
+  <h1><span>API</span> とは何か？</h1>
+  <p>アプリ同士をつなぐ「取り次ぎ窓口」を図解します</p>
+</header>
+
+<!-- ① ひとことで言うと -->
+<section>
+  <div class="section-title">① ひとことで言うと（レストランの例）</div>
+  <div class="analogy-box">
+    <div class="scene">
+      <!-- お客 -->
+      <div class="actor">
+        <div class="actor-icon">🙋</div>
+        <div class="actor-label">お客さん<br><small style="color:#64748b">（アプリ）</small></div>
+      </div>
+
+      <!-- 矢印 1 -->
+      <div class="arrow-block">
+        <div class="arrow-pill">「カレーください」<br>リクエスト →</div>
+        <div class="arrow-line">⟷</div>
+        <div class="arrow-pill res">← 料理を持ってくる<br>レスポンス</div>
+      </div>
+
+      <!-- ウェイター -->
+      <div class="actor">
+        <div class="actor-icon">🧑‍🍳</div>
+        <div class="actor-label">ウェイター<br><small style="color:#14b8a6;font-weight:700">（API）</small></div>
+      </div>
+
+      <!-- 矢印 2 -->
+      <div class="arrow-block">
+        <div class="arrow-pill">「カレー1つ！」<br>注文 →</div>
+        <div class="arrow-line">⟷</div>
+        <div class="arrow-pill res">← 料理を受け取る</div>
+      </div>
+
+      <!-- キッチン -->
+      <div class="actor">
+        <div class="actor-icon">🍳</div>
+        <div class="actor-label">キッチン<br><small style="color:#64748b">（サーバー）</small></div>
+      </div>
+    </div>
+
+    <p class="analogy-text">
+      お客さんはキッチンの中に入らなくていい。<br>
+      <strong>ウェイター（API）</strong> に頼むだけで、欲しいものが手に入る。<br>
+      アプリも同じ仕組みでサーバーからデータをもらいます。
+    </p>
+  </div>
+</section>
+
+<!-- ② 仕組み図（アニメーション） -->
+<section>
+  <div class="section-title">② データが流れる仕組み</div>
+  <div class="flow-diagram">
+    <div class="flow-row">
+
+      <!-- アプリ -->
+      <div class="flow-box app">
+        <div class="flow-box-icon">📱</div>
+        <div class="flow-box-name">アプリ</div>
+        <div class="flow-box-desc">ユーザーが操作する画面</div>
+      </div>
+
+      <!-- 矢印①（アプリ→API） -->
+      <div class="flow-arrow">
+        <div class="req-label">リクエスト</div>
+        <div class="line-track">
+          <div class="track-bg"></div>
+          <div class="dot-right"></div>
+        </div>
+        <div class="res-label">レスポンス</div>
+        <div class="line-track">
+          <div class="track-bg"></div>
+          <div class="dot-left"></div>
+        </div>
+      </div>
+
+      <!-- API -->
+      <div class="flow-box api">
+        <div class="flow-box-icon">🔌</div>
+        <div class="flow-box-name">API</div>
+        <div class="flow-box-desc">取り次ぎ・ルール管理</div>
+      </div>
+
+      <!-- 矢印②（API→サーバー） -->
+      <div class="flow-arrow">
+        <div class="req-label">リクエスト</div>
+        <div class="line-track">
+          <div class="track-bg"></div>
+          <div class="dot-right" style="animation-delay:0.3s"></div>
+        </div>
+        <div class="res-label">レスポンス</div>
+        <div class="line-track">
+          <div class="track-bg"></div>
+          <div class="dot-left" style="animation-delay:1.3s"></div>
+        </div>
+      </div>
+
+      <!-- サーバー -->
+      <div class="flow-box server">
+        <div class="flow-box-icon">🗄️</div>
+        <div class="flow-box-name">サーバー</div>
+        <div class="flow-box-desc">データを保存・処理</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ③ ステップ解説 -->
+<section>
+  <div class="section-title">③ 通信の4ステップ</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>アプリがリクエストを送る</h3>
+        <p>「天気を教えて」「ユーザー情報をちょうだい」などの<strong>お願い</strong>をAPIに送ります。<br>
+        例: <code>GET /weather?city=Tokyo</code></p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>APIがリクエストを確認・振り分ける</h3>
+        <p>「このリクエストは正しい形式か？」「アクセス権限があるか？」を確認して、
+        サーバーへ適切に転送します。ルールを守った通信のみを通す<strong>ゲートキーパー</strong>。</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>サーバーがデータを処理して返す</h3>
+        <p>データベースからデータを取り出したり、計算をして、APIへ結果を返します。<br>
+        例: <code>&#123; "city": "Tokyo", "temp": 18 &#125;</code> のようなデータ。</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>APIがアプリへレスポンスを届ける</h3>
+        <p>サーバーから受け取ったデータをアプリに渡します。アプリはそのデータを画面に<strong>表示</strong>して
+        ユーザーに見せます。「東京 18°C」のように！</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ④ 身近な例 -->
+<section>
+  <div class="section-title">④ 身近なAPIの例</div>
+  <div class="examples-grid">
+
+    <div class="example-card">
+      <div class="ex-icon">🗺️</div>
+      <h4>地図アプリ</h4>
+      <p>Google Maps APIを使って、他のアプリに地図を表示する</p>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-icon">🌤️</div>
+      <h4>天気予報</h4>
+      <p>気象庁のAPIから気温・降水確率などのデータを取得する</p>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-icon">💳</div>
+      <h4>決済サービス</h4>
+      <p>Stripeなどの決済APIで安全にクレジットカード処理を行う</p>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-icon">🤖</div>
+      <h4>AI・ChatGPT</h4>
+      <p>OpenAI APIを呼び出すことで、アプリにAI機能を追加できる</p>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-icon">🔐</div>
+      <h4>ログイン連携</h4>
+      <p>「Googleでログイン」ボタンの裏側でOAuth APIが動いている</p>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-icon">📦</div>
+      <h4>配送追跡</h4>
+      <p>宅配会社のAPIで荷物の現在地をリアルタイム表示する</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- まとめ -->
+<section>
+  <div class="summary">
+    <h2>📌 まとめ</h2>
+    <p>
+      APIとは <strong>「アプリ同士が会話するための共通ルール」</strong> です。<br>
+      あなたが作るアプリは、世界中のAPIを呼び出すことで<br>
+      地図・AI・決済・天気など、あらゆる機能を<strong>ゼロから作らずに</strong>使えます。<br><br>
+      APIを使いこなすことが、モダンな開発の第一歩です。
+    </p>
+  </div>
+</section>
+
+</body>
+</html>

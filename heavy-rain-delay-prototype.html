@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>豪雨工程遅延 プロトタイプ（塗装工事）</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Hiragino Kaku Gothic ProN"', 'Meiryo', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-[#0f1117] text-slate-200 font-sans pb-16">
+
+  <p class="fixed top-3 right-3 z-40 pointer-events-none select-none" id="prototype-version-badge" title="デプロイ／更新確認用">
+    <span class="inline-block rounded border border-slate-600/50 bg-slate-900/60 px-2 py-0.5 text-[10px] sm:text-[11px] font-mono text-slate-500 tabular-nums leading-tight shadow-sm">
+      Prototype v0.2（<span id="prototype-version-date">—</span>）
+    </span>
+  </p>
+
+  <header class="text-center pt-10 px-4 pb-2">
+    <p class="inline-block border border-amber-500 text-amber-500 text-[0.65rem] tracking-[0.2em] px-4 py-1.5 rounded-sm mb-4">PROTOTYPE / HEAVY RAIN</p>
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide mb-2">豪雨による工程遅延 プロトタイプ</h1>
+    <p class="text-slate-500 text-sm">塗装工事基準工程表 ／ 月～土実働・日曜休み</p>
+  </header>
+
+  <!-- シナリオ（report-tool-design 風） -->
+  <div class="max-w-3xl mx-auto px-4 mb-10">
+    <div class="bg-gradient-to-br from-[#1e1b14] to-[#1a1a2e] border border-slate-700 border-l-4 border-l-red-500 rounded-xl p-6 flex gap-4 items-start">
+      <span class="text-3xl shrink-0" aria-hidden="true">🌧️</span>
+      <div>
+        <h2 class="text-sm font-bold text-red-400 tracking-widest mb-2">遅延入力フロー</h2>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          <strong class="text-amber-200/90">豪雨発生</strong>から雨の状況を入力し、仮の遅延作業日数を確認のうえ<strong class="text-amber-200/90">確定</strong>してください。確定後、施主・近隣向けの通知文をコピーできます（数値はプロトタイプ用の簡易計算です）。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-5xl mx-auto px-4 space-y-10">
+
+    <!-- 操作（高さ固定：入力はモーダル） -->
+    <section class="rounded-2xl border border-slate-700/80 bg-slate-900/50 p-6 sm:p-8">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <button type="button" id="btn-trigger"
+          class="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold px-6 py-3.5 shadow-lg shadow-red-900/30 transition focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-[#0f1117]">
+          <span>🌧</span> 豪雨発生
+        </button>
+        <p class="text-slate-500 text-sm" id="trigger-hint">上のボタンで入力欄を表示します（モーダル）。</p>
+      </div>
+    </section>
+
+    <!-- 確定後：通知文 -->
+    <section id="notice-section" class="hidden rounded-2xl border border-emerald-600/40 bg-emerald-950/20 p-6 sm:p-8">
+      <p id="notice-stale" class="hidden text-amber-400/90 text-sm mb-3" role="status">入力内容が変わりました。「この内容で確定」で通知文を更新できます。</p>
+      <h2 class="text-sm font-bold text-emerald-400 tracking-widest mb-4">確定内容・通知文（コピー可）</h2>
+      <div class="mb-4 flex flex-wrap gap-2">
+        <button type="button" id="copy-full" class="text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg px-4 py-2">全文をコピー</button>
+        <button type="button" id="copy-short" class="text-sm font-semibold border border-emerald-600/60 text-emerald-300 hover:bg-emerald-900/40 rounded-lg px-4 py-2">短文のみコピー</button>
+        <span id="copy-toast" class="hidden self-center text-emerald-400 text-sm" role="status">コピーしました</span>
+      </div>
+      <pre id="notice-text" class="whitespace-pre-wrap text-slate-300 text-sm leading-relaxed bg-slate-900/80 border border-slate-700 rounded-xl p-4 font-sans min-h-[120px]"></pre>
+    </section>
+
+    <!-- 基準工程表 -->
+    <section>
+      <div class="flex items-center gap-3 text-xs font-bold tracking-[0.18em] text-slate-500 mb-4">
+        <span>基準工程表（作業日ベース）</span>
+        <span class="flex-1 h-px bg-slate-800"></span>
+      </div>
+      <p class="text-slate-500 text-sm mb-4">週: 月曜～土曜 実働 ／ 日曜 休み ／ 1日目～12日目</p>
+      <div class="overflow-x-auto rounded-xl border border-slate-700">
+        <table class="w-full text-sm min-w-[640px]">
+          <thead>
+            <tr class="bg-slate-800/80 text-slate-400 text-left text-xs">
+              <th class="p-3 font-bold">作業日</th>
+              <th class="p-3 font-bold">内容</th>
+              <th class="p-3 font-bold" id="th-date-plan">予定日（遅延なし）</th>
+              <th class="p-3 font-bold text-amber-200/90" id="th-date-delay">予定日（遅延反映）</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body" class="divide-y divide-slate-800 text-slate-300"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 入力：ベースレイアウト外のオーバーレイ（main の max-width に影響しない） -->
+  <div id="rain-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="rain-modal-title">
+    <div id="rain-modal-backdrop" class="fixed inset-0 bg-slate-950/80" aria-hidden="true"></div>
+    <div class="pointer-events-none relative z-10 flex min-h-full items-center justify-center p-4 sm:p-6">
+      <div class="pointer-events-auto w-full max-w-lg max-h-[min(90vh,42rem)] overflow-y-auto rounded-2xl border border-slate-600 bg-slate-900 shadow-2xl shadow-black/50">
+        <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-slate-700/80 bg-slate-900/95 px-5 py-4 backdrop-blur-sm">
+          <h2 id="rain-modal-title" class="text-base font-bold text-white">豪雨状況の入力</h2>
+          <button type="button" id="btn-modal-close"
+            class="shrink-0 rounded-lg border border-slate-600 bg-slate-800/80 px-3 py-1.5 text-sm font-semibold text-slate-200 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500/80">
+            閉じる
+          </button>
+        </div>
+        <div class="space-y-6 p-5 sm:p-6">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="rain-hours" class="block text-xs font-bold text-amber-500/90 tracking-wider mb-2">雨の時間（時間）</label>
+              <input type="number" id="rain-hours" min="0" max="24" step="0.5" value="0"
+                class="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="例: 5.5">
+              <p class="text-slate-500 text-xs mt-1">当日の降雨が続いた時間</p>
+            </div>
+            <div>
+              <label for="rain-days" class="block text-xs font-bold text-amber-500/90 tracking-wider mb-2">雨が続く日数</label>
+              <input type="number" id="rain-days" min="0" max="30" step="1" value="0"
+                class="w-full rounded-lg bg-slate-800 border border-slate-600 text-white px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="例: 2">
+              <p class="text-slate-500 text-xs mt-1">以降も雨の見込みがある暦日（概算）</p>
+            </div>
+          </div>
+          <div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 sm:p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <span class="text-amber-200/80 text-sm font-bold">仮の遅延（未確定）</span>
+              <p class="text-2xl font-black text-amber-300" id="preview-delay">
+                <span id="delay-num">0</span><span class="text-base font-bold text-amber-200/70 ml-1">作業日</span>
+              </p>
+            </div>
+            <p class="text-slate-500 text-xs mt-2" id="delay-explain"></p>
+          </div>
+          <button type="button" id="btn-confirm"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 transition focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+            この内容で確定
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  /** 月～土実働・日休み: 作業日のみカウントして暦日を進める */
+  const MS_DAY = 864e5;
+  const TASKS = [
+    '足場組立',
+    '水洗い',
+    '養生',
+    '板金錆止め',
+    '板金仕上',
+    '壁下地塗り',
+    '壁下地塗り',
+    '壁仕上げ',
+    '壁仕上げ',
+    '樋塗装',
+    '補修養生取',
+    '足場解体',
+  ];
+
+  /** 表示用: プロトタイプの工程開始日（月曜固定の例: 2026-04-20） */
+  const PLANNED_START = new Date(2026, 3, 20);
+
+  function isWorkDay(d) {
+    return d.getDay() !== 0; // 0 = 日曜
+  }
+
+  /** 基準日から 作業日 n 日分シフト（n=0 は同じ作業日） */
+  function addWorkingDaysFrom(base, workDays) {
+    const d = new Date(base.getTime());
+    let left = workDays;
+    while (left > 0) {
+      d.setTime(d.getTime() + MS_DAY);
+      if (isWorkDay(d)) left--;
+    }
+    return d;
+  }
+
+  /** 作業日1日目 = base。作業日 index（0起算）の日付 */
+  function workDayDate(base, workIndex0) {
+    if (workIndex0 <= 0) return new Date(base.getTime());
+    return addWorkingDaysFrom(base, workIndex0);
+  }
+
+  function formatDateJa(d) {
+    const w = ['日', '月', '火', '水', '木', '金', '土'];
+    return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${w[d.getDay()]}）`;
+  }
+
+  /**
+   * 仮遅延日数（プロトタイプ簡易式）
+   * - 雨の時間: 4時間毎 +1 作業日分（h>0 なら少なくとも +1、最大 +3）
+   * - 雨が続く日数: 1 につき作業 1 日分を加算
+   */
+  function computeProvisionalDelay(rainHours, continueDays) {
+    const h = Math.max(0, Number(rainHours) || 0);
+    const c = Math.max(0, Math.floor(Number(continueDays) || 0));
+    if (h <= 0) return c;
+    return Math.min(3, Math.max(1, Math.ceil(h / 4))) + c;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const btnTrigger = $('btn-trigger');
+  const rainModal = $('rain-modal');
+  const rainModalBackdrop = $('rain-modal-backdrop');
+  const btnModalClose = $('btn-modal-close');
+  const triggerHint = $('trigger-hint');
+  const inputHours = $('rain-hours');
+  const inputDays = $('rain-days');
+  const delayNum = $('delay-num');
+  const delayExplain = $('delay-explain');
+  const btnConfirm = $('btn-confirm');
+  const noticeSection = $('notice-section');
+  const noticeText = $('notice-text');
+  const copyFull = $('copy-full');
+  const copyShort = $('copy-short');
+  const copyToast = $('copy-toast');
+  const noticeStale = $('notice-stale');
+  const scheduleBody = $('schedule-body');
+  const thDatePlan = $('th-date-plan');
+  const thDateDelay = $('th-date-delay');
+
+  let confirmedDelay = null;
+  /** 直近の確定以降、入力が変わったか（仮/確定の切替用） */
+  let lastConfirmedKey = null;
+
+  function openRainModal() {
+    rainModal.classList.remove('hidden');
+    rainModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overflow-hidden');
+    document.documentElement.classList.add('overflow-hidden');
+  }
+  function closeRainModal() {
+    rainModal.classList.add('hidden');
+    rainModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overflow-hidden');
+    document.documentElement.classList.remove('overflow-hidden');
+    onInputs();
+  }
+
+  function currentInputKey() {
+    return String(Math.max(0, parseFloat(inputHours.value) || 0)) + '|' + String(Math.max(0, parseInt(inputDays.value, 10) || 0));
+  }
+
+  function buildScheduleRows(delayWorkDays, opts) {
+    const o = opts || {};
+    const provisional = !!o.provisional;
+    const dlay = Math.max(0, delayWorkDays | 0);
+    scheduleBody.innerHTML = '';
+    for (let i = 0; i < 12; i++) {
+      const d0 = workDayDate(PLANNED_START, i);
+      const d1 = workDayDate(PLANNED_START, i + dlay);
+      const tr = document.createElement('tr');
+      tr.className = i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/10';
+      tr.innerHTML = `
+        <td class="p-3 text-amber-200/90 font-bold whitespace-nowrap">${i + 1}日目</td>
+        <td class="p-3">${TASKS[i]}</td>
+        <td class="p-3 text-slate-400">${formatDateJa(d0)}</td>
+        <td class="p-3 font-medium ${dlay > 0 ? 'text-amber-200' : 'text-slate-500'}">${formatDateJa(d1)}${dlay === 0 ? ' <span class="text-slate-600 text-xs">（遅延なし）</span>' : ''}</td>
+      `;
+      scheduleBody.appendChild(tr);
+    }
+    thDatePlan.textContent = '予定日（遅延なし）';
+    if (dlay > 0) {
+      thDateDelay.textContent = provisional
+        ? '予定日（+' + dlay + ' 作業日シフト・仮）'
+        : '予定日（+' + dlay + ' 作業日シフト・確定）';
+    } else {
+      thDateDelay.textContent = provisional
+        ? '予定日（遅延反映・仮）'
+        : '予定日（遅延反映）';
+    }
+  }
+
+  function updatePreview() {
+    const h = Math.max(0, parseFloat(inputHours.value) || 0);
+    const c = Math.max(0, parseInt(inputDays.value, 10) || 0);
+    const d = computeProvisionalDelay(h, c);
+    delayNum.textContent = String(d);
+    delayExplain.textContent =
+      '計算: 雨の時間は 4 時間毎 +1 作業日分（' +
+      (h > 0 ? '当日分 最大3' : '0 の場合は時間要因なし') +
+      '）＋ 雨が続く日数（' + c + ' 日分） ※プロト向け仮想定。';
+  }
+
+  function buildNotice(delayWorkDays, h, c) {
+    const lastIndex = 11;
+    const newEnd = workDayDate(PLANNED_START, lastIndex + delayWorkDays);
+    const endStr = formatDateJa(newEnd);
+    const startStr = formatDateJa(PLANNED_START);
+    return (
+      `【塗装工事 工程遅延のお知らせ（案）】\n\n` +
+      `拝啓 時下ますますご清栄のこととお慶び申し上げます。さて、工事中の現場におきまして、${
+        h > 0 || c > 0
+          ? `豪雨等の天候不順（降雨時間 約${h}時間、雨の続き 約${c}日）のため、`
+          : '天候不順のため、'
+      }安全に作業を行う観点から、当初の工程表に遅延が生じる見込みです。\n\n` +
+      `基準工程（1日目：足場組立 ～ 12日目：足場解体）につき、遅延を約${delayWorkDays}作業日分 織り込み、完了目安を「${endStr}」に変更する予定です（当初の遅延なし完了日：${formatDateJa(workDayDate(PLANNED_START, lastIndex))}）。\n` +
+      `週: 月曜～土曜 実働 ／ 日曜 休み ／ 作業日ベースの調整を行います。\n\n` +
+      `工事開始: ${startStr}（1日目）\n` +
+      `上記、ご了承のほどよろしくお願い申し上げます。\n\n` +
+      `（プロトタイプ用の仮文面です。数値は入力に基づき自動生成）`
+    );
+  }
+
+  function buildNoticeShort(delayWorkDays) {
+    const newEnd = formatDateJa(workDayDate(PLANNED_START, 11 + delayWorkDays));
+    return `近隣の皆様 お知らせ：塗装工事の豪雨影響により、完了予定を遅延（+約${delayWorkDays}作業日）し、目安${newEnd} 完了の見込みです。ご了承ください。`;
+  }
+
+  function showCopyToast() {
+    copyToast.classList.remove('hidden');
+    setTimeout(function () { copyToast.classList.add('hidden'); }, 2000);
+  }
+
+  async function copyToClipboard(t) {
+    try {
+      await navigator.clipboard.writeText(t);
+      showCopyToast();
+    } catch (e) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = t;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCopyToast();
+      } catch (e2) { alert('コピーに失敗しました'); }
+    }
+  }
+
+  function onInputs() {
+    updatePreview();
+    const h = Math.max(0, parseFloat(inputHours.value) || 0);
+    const c = Math.max(0, parseInt(inputDays.value, 10) || 0);
+    const d = computeProvisionalDelay(h, c);
+    const key = currentInputKey();
+    /** 仮: 未確定で入力に内容がある、または 確定後に入力が変わった */
+    const prov = (lastConfirmedKey !== null && key !== lastConfirmedKey) || (lastConfirmedKey === null && (h > 0 || c > 0));
+    buildScheduleRows(d, { provisional: prov });
+    if (noticeSection.classList.contains('hidden') || lastConfirmedKey === null) {
+      if (noticeStale) noticeStale.classList.add('hidden');
+    } else if (noticeStale) {
+      if (currentInputKey() !== lastConfirmedKey) noticeStale.classList.remove('hidden');
+      else noticeStale.classList.add('hidden');
+    }
+  }
+  inputHours.addEventListener('input', onInputs);
+  inputDays.addEventListener('input', onInputs);
+
+  btnTrigger.addEventListener('click', function () {
+    openRainModal();
+    triggerHint.textContent = '仮表示は未確定です。内容を確定するまで本番の通知文は更新されません。';
+    inputHours.focus();
+    onInputs();
+  });
+  if (rainModalBackdrop) {
+    rainModalBackdrop.addEventListener('click', closeRainModal);
+  }
+  if (btnModalClose) {
+    btnModalClose.addEventListener('click', closeRainModal);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !rainModal.classList.contains('hidden')) {
+      e.preventDefault();
+      closeRainModal();
+    }
+  });
+
+  btnConfirm.addEventListener('click', function () {
+    const h = Math.max(0, parseFloat(inputHours.value) || 0);
+    const c = Math.max(0, parseInt(inputDays.value, 10) || 0);
+    const delay = computeProvisionalDelay(h, c);
+    confirmedDelay = delay;
+    lastConfirmedKey = currentInputKey();
+    if (noticeStale) noticeStale.classList.add('hidden');
+    const full = buildNotice(delay, h, c);
+    const shortN = buildNoticeShort(delay);
+    noticeText.textContent = full;
+    noticeText.dataset.short = shortN;
+    noticeText.dataset.full = full;
+    noticeSection.classList.remove('hidden');
+    buildScheduleRows(delay, { provisional: false });
+    closeRainModal();
+    noticeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  copyFull.addEventListener('click', function () { copyToClipboard(noticeText.dataset.full || noticeText.textContent); });
+  copyShort.addEventListener('click', function () { copyToClipboard(noticeText.dataset.short || buildNoticeShort(confirmedDelay || 0)); });
+
+  onInputs();
+
+  (function setVersionBadgeDate() {
+    const el = document.getElementById('prototype-version-date');
+    if (!el) return;
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    el.textContent = y + '-' + m + '-' + day;
+  })();
+})();
+  </script>
+</body>
+</html>
