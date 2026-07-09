@@ -1,0 +1,48 @@
+// 株式会社ハイランド・ハウス 顧客ポータル
+// Customer → Construction → Document
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// 顧客マスタ
+model Customer {
+  id            String         @id @default(cuid())
+  name          String
+  nameKana      String         // あいうえお検索用（例：タナカ）
+  address       String
+  phone         String
+  contactPerson String         // 担当者
+  constructions Construction[]
+  documents     Document[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+/// 工事履歴
+model Construction {
+  id           String   @id @default(cuid())
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  contractDate DateTime
+  title        String   // 工事内容
+  progress     String   // 進捗状況
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// 顧客バインダー（書類）
+model Document {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  folder     String   // 見積書 / 契約書 / 工事写真 / 保証書 / 点検記録
+  fileName   String
+  fileSize   String   @default("-")
+  updatedAt  DateTime @default(now())
+}

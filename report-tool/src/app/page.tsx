@@ -25,8 +25,14 @@ export default function Home() {
           塗装工事 ／ 突発的な天候変化による工程変更の通知フロー
         </p>
         <p className="mt-4 text-xs text-slate-600">
-          Next.js · TypeScript · Tailwind CSS · shadcn/ui · Vercel
+          Next.js · TypeScript · Tailwind CSS · shadcn/ui · Prisma · SQLite · Vercel
         </p>
+        <a
+          href="/workspace"
+          className="mt-6 inline-flex items-center rounded-lg border border-violet-500/40 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 transition-colors hover:bg-violet-500/20"
+        >
+          顧客ポータルを開く →
+        </a>
       </header>
 
       <Alert className="mx-auto mb-14 max-w-[860px] border-red-500/30 border-l-4 border-l-red-500 bg-gradient-to-br from-[#1e1b14] to-[#1a1a2e] text-slate-300">

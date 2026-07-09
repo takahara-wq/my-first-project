@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ハイランドハウス顧客ポータル｜第4回月次課題 提出用図解</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page-break { break-before: page; }
+      .no-print { display: none; }
+    }
+    .section-rule {
+      border-top: 3px solid #1e293b;
+      position: relative;
+      margin-top: 2.5rem;
+      padding-top: 1.75rem;
+    }
+    .section-rule::before {
+      content: attr(data-section);
+      position: absolute;
+      top: -0.85rem;
+      left: 0;
+      background: #1e293b;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.75rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<article class="mx-auto my-8 max-w-[900px] bg-white shadow-lg print:my-0 print:shadow-none">
+
+  <!-- ===== タイトル ===== -->
+  <header class="border-b-4 border-slate-800 px-10 py-10 text-center">
+    <p class="text-xs font-semibold tracking-[0.3em] text-slate-500">AI-Driven School 第4回月次課題</p>
+    <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-slate-900">
+      ハイランドハウス顧客ポータル
+    </h1>
+    <p class="mt-4 text-lg font-medium text-slate-600">
+      顧客情報・工事履歴・書類管理を一元化する仕組み
+    </p>
+    <p class="mt-2 text-sm text-slate-400">株式会社ハイランド・ハウス</p>
+    <div class="mt-5 flex flex-wrap justify-center gap-2 text-[11px] text-slate-500">
+      <span class="rounded border px-2 py-0.5">Next.js</span>
+      <span class="rounded border px-2 py-0.5">TypeScript</span>
+      <span class="rounded border px-2 py-0.5">Tailwind CSS</span>
+      <span class="rounded border px-2 py-0.5">shadcn/ui</span>
+      <span class="rounded border px-2 py-0.5">Prisma</span>
+      <span class="rounded border px-2 py-0.5">SQLite</span>
+      <span class="rounded border px-2 py-0.5">Vercel</span>
+    </div>
+  </header>
+
+  <div class="px-10 py-8">
+
+    <!-- ① 解決する課題 -->
+    <section class="section-rule" data-section="① 解決する課題">
+      <p class="text-sm leading-relaxed text-slate-700">
+        リフォーム会社では、次の情報が<strong>複数箇所に分散保存</strong>されている。
+      </p>
+      <ul class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-3">
+        <li class="rounded border bg-slate-50 px-3 py-2">・顧客情報</li>
+        <li class="rounded border bg-slate-50 px-3 py-2">・工事履歴</li>
+        <li class="rounded border bg-slate-50 px-3 py-2">・見積書</li>
+        <li class="rounded border bg-slate-50 px-3 py-2">・契約書</li>
+        <li class="rounded border bg-slate-50 px-3 py-2">・保証書</li>
+        <li class="rounded border bg-slate-50 px-3 py-2">・工事写真</li>
+      </ul>
+      <p class="mt-5 rounded-lg border-l-4 border-red-500 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
+        そのため「どこに何があるか分からない」という課題がある。
+      </p>
+
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-lg border-2 border-red-200 bg-red-50/50 p-5">
+          <p class="text-sm font-bold text-red-700">Before（現状）</p>
+          <ul class="mt-3 space-y-2 text-sm text-slate-700">
+            <li>・顧客情報と書類が分散</li>
+            <li>・工事履歴を探すのに時間がかかる</li>
+            <li>・担当者しか場所が分からない</li>
+          </ul>
+        </div>
+        <div class="rounded-lg border-2 border-emerald-300 bg-emerald-50/50 p-5">
+          <p class="text-sm font-bold text-emerald-700">After（本ツール導入後）</p>
+          <ul class="mt-3 space-y-2 text-sm text-slate-700">
+            <li>・顧客→工事→書類が<strong>一画面</strong>で分かる</li>
+            <li>・顧客検索だけで必要情報を表示</li>
+            <li>・情報共有が容易になる</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 画面キャプチャ -->
+    <section class="section-rule" data-section="② 画面キャプチャ">
+      <p class="mb-4 text-sm text-slate-600">現在の<strong>4ペイン画面</strong>（業務ソフト風レイアウト）</p>
+
+      <div class="overflow-hidden rounded-lg border-2 border-slate-300">
+        <!-- スクショ差し替え：<img src="./workspace-screenshot.png" class="w-full block"> -->
+        <div class="grid grid-cols-4 gap-px bg-slate-400 text-center text-xs">
+          <div class="bg-violet-100 px-2 py-6">
+            <p class="font-bold text-violet-900">ペイン1</p>
+            <p class="mt-2 text-sm font-semibold text-violet-800">顧客ポータル</p>
+            <p class="mt-1 text-[10px] text-violet-600">検索・あいうえお・一覧</p>
+          </div>
+          <div class="bg-orange-100 px-2 py-6">
+            <p class="font-bold text-orange-900">ペイン2</p>
+            <p class="mt-2 text-sm font-semibold text-orange-800">顧客情報</p>
+            <p class="mt-1 text-[10px] text-orange-600">名前・住所・電話・担当者</p>
+          </div>
+          <div class="bg-sky-100 px-2 py-6">
+            <p class="font-bold text-sky-900">ペイン3</p>
+            <p class="mt-2 text-sm font-semibold text-sky-800">工事履歴</p>
+            <p class="mt-1 text-[10px] text-sky-600">契約日・内容・進捗</p>
+          </div>
+          <div class="bg-emerald-100 px-2 py-6">
+            <p class="font-bold text-emerald-900">ペイン4</p>
+            <p class="mt-2 text-sm font-semibold text-emerald-800">顧客バインダー</p>
+            <p class="mt-1 text-[10px] text-emerald-600">楽々ライブラリ風・棚表示</p>
+          </div>
+        </div>
+        <p class="bg-slate-50 px-4 py-2 text-center text-[11px] text-slate-500 no-print">
+          ↑ workspace-screenshot.png を同フォルダに置き、imgタグのコメントを外してください
+        </p>
+      </div>
+
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-2 rounded-lg bg-slate-50 py-4 text-sm font-semibold">
+        <span class="rounded bg-violet-200 px-3 py-1.5 text-violet-900">顧客</span>
+        <span class="text-slate-400">→</span>
+        <span class="rounded bg-sky-200 px-3 py-1.5 text-sky-900">工事</span>
+        <span class="text-slate-400">→</span>
+        <span class="rounded bg-emerald-200 px-3 py-1.5 text-emerald-900">書類</span>
+        <span class="ml-2 text-xs font-normal text-slate-500">左から右へ、業務の流れが一目で分かる</span>
+      </div>
+    </section>
+
+    <!-- ③ 保存できるデータ -->
+    <section class="section-rule" data-section="③ 保存できるようにしたデータ">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="rounded-lg border-2 border-violet-200 p-4">
+          <p class="font-bold text-violet-800">Customers</p>
+          <p class="text-xs text-violet-600">顧客マスタ</p>
+          <ul class="mt-3 space-y-1 text-sm text-slate-700">
+            <li>・顧客名</li>
+            <li>・住所</li>
+            <li>・電話番号</li>
+            <li>・担当者</li>
+          </ul>
+        </div>
+        <div class="rounded-lg border-2 border-sky-200 p-4">
+          <p class="font-bold text-sky-800">Construction</p>
+          <p class="text-xs text-sky-600">工事履歴</p>
+          <ul class="mt-3 space-y-1 text-sm text-slate-700">
+            <li>・工事名</li>
+            <li>・契約日</li>
+            <li>・進捗率</li>
+            <li>・工事内容</li>
+          </ul>
+        </div>
+        <div class="rounded-lg border-2 border-emerald-200 p-4">
+          <p class="font-bold text-emerald-800">Documents</p>
+          <p class="text-xs text-emerald-600">顧客バインダー</p>
+          <ul class="mt-3 space-y-1 text-sm text-slate-700">
+            <li>・見積書</li>
+            <li>・契約書</li>
+            <li>・工事写真</li>
+            <li>・保証書</li>
+            <li>・点検記録</li>
+          </ul>
+        </div>
+      </div>
+      <p class="mt-4 text-center text-xs text-slate-500">
+        Prisma スキーマで3テーブルに正規化 ／ リロード後もデータが保持される
+      </p>
+    </section>
+
+    <!-- ④ 保存先と選定理由 -->
+    <section class="section-rule" data-section="④ 保存先と選定理由">
+      <div class="grid gap-6 sm:grid-cols-2">
+        <div>
+          <p class="text-sm font-bold text-slate-500">保存先</p>
+          <p class="mt-2 rounded-lg bg-slate-800 px-5 py-4 text-center text-2xl font-bold text-white">
+            SQLite
+          </p>
+          <p class="mt-2 text-center font-mono text-sm text-slate-600">prisma/dev.db</p>
+
+          <p class="mt-5 text-sm font-bold text-slate-500">理由</p>
+          <ul class="mt-2 space-y-2 text-sm text-slate-700">
+            <li class="flex gap-2"><span class="text-emerald-600">✓</span>無料で利用できる</li>
+            <li class="flex gap-2"><span class="text-emerald-600">✓</span>Cursorとの相性が良い</li>
+            <li class="flex gap-2"><span class="text-emerald-600">✓</span>学習コストが低い</li>
+            <li class="flex gap-2"><span class="text-emerald-600">✓</span>Vercelとの連携が容易</li>
+            <li class="flex gap-2"><span class="text-emerald-600">✓</span>データ永続化の学習に適している</li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold text-slate-500">データの流れ</p>
+          <div class="mt-3 space-y-0 rounded-lg border border-slate-200 bg-slate-50 p-5 text-center text-sm font-semibold">
+            <div class="rounded bg-violet-100 px-4 py-3 text-violet-900">画面（4ペイン操作）</div>
+            <div class="py-1 text-slate-400">↓</div>
+            <div class="rounded bg-slate-700 px-4 py-3 text-white">SQLite（prisma/dev.db）</div>
+            <div class="py-1 text-slate-400">↓</div>
+            <div class="rounded bg-sky-100 px-4 py-3 text-sky-900">リロード（F5）</div>
+            <div class="py-1 text-slate-400">↓</div>
+            <div class="rounded bg-emerald-100 px-4 py-3 text-emerald-900">データ保持 ✅</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑤ 工夫したポイント -->
+    <section class="section-rule" data-section="⑤ 工夫したポイント">
+      <ul class="space-y-3 text-sm text-slate-700">
+        <li class="flex gap-3 rounded-lg border bg-slate-50 px-4 py-3">
+          <span class="font-bold text-indigo-600">1</span>
+          <span><strong>4ペイン構成</strong> — 業務ソフトと同じ横並びレイアウト</span>
+        </li>
+        <li class="flex gap-3 rounded-lg border bg-slate-50 px-4 py-3">
+          <span class="font-bold text-indigo-600">2</span>
+          <span><strong>顧客→工事→書類を可視化</strong> — 左から右へ流れが一目で分かる</span>
+        </li>
+        <li class="flex gap-3 rounded-lg border bg-slate-50 px-4 py-3">
+          <span class="font-bold text-indigo-600">3</span>
+          <span><strong>楽々ライブラリ風バインダー</strong> — 棚に並ぶ書類で直感的に操作</span>
+        </li>
+        <li class="flex gap-3 rounded-lg border bg-slate-50 px-4 py-3">
+          <span class="font-bold text-indigo-600">4</span>
+          <span><strong>色分けされた画面構成</strong> — 紫・橙・青・緑でペインを識別</span>
+        </li>
+        <li class="flex gap-3 rounded-lg border bg-slate-50 px-4 py-3">
+          <span class="font-bold text-indigo-600">5</span>
+          <span><strong>業務ソフトらしいUI</strong> — 一覧型・余白多め・見やすい文字サイズ</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ⑥ 苦戦したポイント -->
+    <section class="section-rule" data-section="⑥ 苦戦したポイント">
+      <ul class="space-y-2 text-sm text-slate-700">
+        <li class="flex items-start gap-2 rounded border-l-4 border-rose-400 bg-rose-50/50 px-4 py-2.5">
+          <span class="text-rose-500">▸</span>
+          <span><strong>Prisma設定</strong> — スキーマ定義・Client生成・バージョン調整</span>
+        </li>
+        <li class="flex items-start gap-2 rounded border-l-4 border-rose-400 bg-rose-50/50 px-4 py-2.5">
+          <span class="text-rose-500">▸</span>
+          <span><strong>SQLite構築</strong> — .env設定・db push・シードデータ投入</span>
+        </li>
+        <li class="flex items-start gap-2 rounded border-l-4 border-rose-400 bg-rose-50/50 px-4 py-2.5">
+          <span class="text-rose-500">▸</span>
+          <span><strong>リロード後のデータ保持</strong> — Server Actions + revalidatePath</span>
+        </li>
+        <li class="flex items-start gap-2 rounded border-l-4 border-rose-400 bg-rose-50/50 px-4 py-2.5">
+          <span class="text-rose-500">▸</span>
+          <span><strong>4ペインレイアウト作成</strong> — 独立スクロール・色分け・連動表示</span>
+        </li>
+        <li class="flex items-start gap-2 rounded border-l-4 border-rose-400 bg-rose-50/50 px-4 py-2.5">
+          <span class="text-rose-500">▸</span>
+          <span><strong>顧客バインダーの表現</strong> — 楽々ライブラリ風の棚UI実装</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ⑦ 今後の展望 -->
+    <section class="section-rule page-break" data-section="⑦ 今後の展望">
+      <ul class="grid gap-2 text-sm sm:grid-cols-2">
+        <li class="rounded border border-dashed border-slate-300 px-4 py-2.5">・ネットワークサーバー連携</li>
+        <li class="rounded border border-dashed border-slate-300 px-4 py-2.5">・PDF閲覧</li>
+        <li class="rounded border border-dashed border-slate-300 px-4 py-2.5">・工事写真管理</li>
+        <li class="rounded border border-dashed border-slate-300 px-4 py-2.5">・電子カタログ管理</li>
+        <li class="rounded border border-dashed border-slate-300 px-4 py-2.5">・施工事例管理</li>
+        <li class="rounded border border-dashed border-slate-300 px-4 py-2.5">・AI検索機能</li>
+      </ul>
+      <p class="mt-6 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-5 text-center text-sm font-semibold leading-relaxed text-white">
+        最終的には、ハイランドハウスの<strong>本格顧客ポータル</strong>として<br class="hidden sm:inline" />
+        顧客対応・工事管理・書類管理を一元化する基盤に発展させる。
+      </p>
+    </section>
+
+  </div>
+
+  <footer class="border-t border-slate-200 bg-slate-50 px-10 py-6 text-center text-xs text-slate-500">
+  <p class="font-semibold text-slate-700">発表の一言（コピペ用）</p>
+  <p class="mt-2 leading-relaxed">
+    「リフォーム会社で散在していた顧客情報・工事履歴・書類を、4ペインの顧客ポータルに一元化しました。
+    PrismaとSQLiteでデータを永続化し、リロード後も情報が残る仕組みを構築しています。」
+  </p>
+  <p class="mt-4 text-slate-400">© 2026 株式会社ハイランド・ハウス｜第4回月次課題</p>
+  </footer>
+
+</article>
+
+<p class="no-print mx-auto mb-10 max-w-[900px] text-center text-xs text-slate-500">
+  提出手順：① /workspace のスクショを②に貼る → ② ブラウザで印刷（PDF）または全体スクショ → 提出
+</p>
+
+</body>
+</html>
