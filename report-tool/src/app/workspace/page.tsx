@@ -1,6 +1,9 @@
 import { getAllWorkspaces, getCustomerList } from "@/app/actions/customers";
 import { BusinessWorkspace } from "@/components/workspace/business-workspace";
 
+/** Vercel本番でもDBアクセスするため動的レンダリング */
+export const dynamic = "force-dynamic";
+
 type WorkspacePageProps = {
   searchParams: Promise<{ q?: string }>;
 };

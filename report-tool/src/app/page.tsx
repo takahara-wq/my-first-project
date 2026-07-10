@@ -29,9 +29,9 @@ export default function Home() {
         </p>
         <a
           href="/workspace"
-          className="mt-6 inline-flex items-center rounded-lg border border-violet-500/40 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300 transition-colors hover:bg-violet-500/20"
+          className="mt-6 inline-flex items-center rounded-lg border-2 border-violet-400 bg-violet-500 px-5 py-2.5 text-sm font-bold text-white shadow transition-colors hover:bg-violet-600"
         >
-          顧客ポータルを開く →
+          顧客ポータルを開く（課題提出用）→
         </a>
       </header>
 
