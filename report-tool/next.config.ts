@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // ビルド時に作成した SQLite をサーバーレス関数へ同梱
+  outputFileTracingIncludes: {
+    "/*": ["./prisma/dev.db"],
+    "/workspace": ["./prisma/dev.db"],
+  },
 };
 
 export default nextConfig;
